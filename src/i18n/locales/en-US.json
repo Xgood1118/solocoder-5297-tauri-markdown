@@ -1,0 +1,137 @@
+{
+  "app": {
+    "title": "Markdown Editor",
+    "untitled": "Untitled"
+  },
+  "menu": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "new": "New",
+    "open": "Open",
+    "save": "Save",
+    "save_as": "Save As",
+    "close": "Close",
+    "export": "Export",
+    "export_html": "Export HTML",
+    "export_pdf": "Export PDF",
+    "export_docx": "Export DOCX",
+    "exit": "Exit"
+  },
+  "edit": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "find": "Find",
+    "replace": "Replace"
+  },
+  "view": {
+    "toggle_sidebar": "Toggle Sidebar",
+    "toggle_outline": "Toggle Outline",
+    "toggle_preview": "Toggle Preview",
+    "theme": "Theme",
+    "font": "Font",
+    "font_size": "Font Size"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "sepia": "Sepia",
+    "solarized": "Solarized"
+  },
+  "font": {
+    "system": "System",
+    "serif": "Serif",
+    "mono": "Monospace",
+    "sans": "Sans Serif"
+  },
+  "sidebar": {
+    "files": "Files",
+    "search": "Search",
+    "snapshots": "Snapshots",
+    "plugins": "Plugins",
+    "settings": "Settings"
+  },
+  "search": {
+    "placeholder": "Search files or content...",
+    "no_results": "No results",
+    "file_name": "File Name",
+    "content": "Content"
+  },
+  "sync": {
+    "title": "Sync Settings",
+    "provider": "Sync Provider",
+    "disabled": "Disabled",
+    "webdav": "WebDAV",
+    "s3": "S3 Compatible",
+    "endpoint": "Endpoint",
+    "username": "Username",
+    "password": "Password",
+    "bucket": "Bucket",
+    "region": "Region",
+    "remote_path": "Remote Path",
+    "auto_sync": "Auto Sync",
+    "sync_interval": "Sync Interval",
+    "test": "Test Connection",
+    "sync_now": "Sync Now",
+    "last_sync": "Last Sync",
+    "status": {
+      "idle": "Idle",
+      "syncing": "Syncing...",
+      "success": "Sync Success",
+      "failed": "Sync Failed"
+    }
+  },
+  "encryption": {
+    "title": "Encryption",
+    "set_password": "Set Password",
+    "encrypt_file": "Encrypt File",
+    "decrypt_file": "Decrypt File",
+    "password": "Password",
+    "confirm_password": "Confirm Password"
+  },
+  "snapshot": {
+    "title": "Snapshots",
+    "create": "Create Snapshot",
+    "restore": "Restore",
+    "delete": "Delete",
+    "no_snapshots": "No snapshots",
+    "created_at": "Created At",
+    "size": "Size"
+  },
+  "outline": {
+    "title": "Outline",
+    "empty": "No headings in document"
+  },
+  "tab": {
+    "close": "Close",
+    "close_others": "Close Others",
+    "close_all": "Close All",
+    "unsaved_changes": "Unsaved changes",
+    "confirm_close": "Save changes before closing?"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "editor": "Editor",
+    "preview": "Preview",
+    "appearance": "Appearance",
+    "sync": "Sync",
+    "plugins": "Plugins",
+    "about": "About"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info"
+  }
+}

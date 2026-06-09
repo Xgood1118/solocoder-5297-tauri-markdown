@@ -1,0 +1,50 @@
+需求：Tauri + Rust 桌面 Markdown 编辑器，本地 / 预览 / 多文档 / 主题 / 插件 / 同步。
+
+背景：VSCode 启动慢、Typora 收费、Obsidian 同步收费。我们要个：Tauri（Rust 后端 + Web 前端，单文件 ~ 5MB，比 Electron 轻 90%）、本地优先、可选云同步（WebDAV / S3 兼容）、开源格式。技术栈 Tauri 2.0 + Rust + Vue3 + CodeMirror 6 + markdown-it + KaTeX + Mermaid。
+
+核心功能：
+- 编辑器：CodeMirror 6 替换 textarea，语法高亮、行号、代码折叠、自动补全
+- 实时预览：右侧分屏，markdown-it + highlight.js + KaTeX + Mermaid
+- 多文档：标签页切换、关闭提示未保存、拖入 .md 文件
+- 主题：light / dark / sepia / solarized；4 种字体（含等宽）
+- 目录大纲：根据 H1-H3 自动生成
+- 图床：拖入图片自动保存到相对路径（`./assets/xxx.png`）
+- 数学公式：行内 / 块级 KaTeX
+- 流程图：Mermaid 代码块 → SVG
+- 历史快照：每 10 分钟本地快照（保留最近 50 个）
+- 同步：可选 WebDAV / S3 兼容服务（坚果云 / 自建 MinIO）；冲突用 updated_at 较新者赢
+- 插件：自定义命令 / 自定义渲染器 / 主题（动态加载 .wasm 或 .js）
+- 全文搜索：ripgrep 风格的快速搜索（用 Rust 后端）
+- 导出：Markdown / HTML / PDF / DOCX
+- 加密：可选用 AES-256 加密文件（敏感笔记用）
+
+涉及模块：
+- `src-tauri/src/`：Rust 后端（文件 I/O、同步、加密、搜索）
+- `src/`：Vue3 前端（编辑器、预览、UI）
+- `src/components/`：Editor、Preview、Outline、TabBar
+- `src/services/`：markdownRenderer、imageUploader、sync
+- `src/store/`：Pinia store：docs、active、theme、sync
+- `tauri.conf.json`：Tauri 配置、权限
+
+注意事项：
+- Tauri 2.0 命令用 `#[tauri::command]`，前端调 `invoke('command_name', { args })`
+- 文件 I/O 用 `std::fs` + `tokio::fs`（异步）
+- 大文件（> 1MB）：流式读写，不一次加载到内存
+- CodeMirror 6 按需加载 extensions（不一次性 import）
+- markdown-it 插件顺序：highlight → katex → mermaid，错了会冲突
+- 预览渲染 debounce 300ms（编辑停顿再渲染）
+- 目录大纲 throttle 500ms（文档变化重算）
+- 历史快照 key 用 hash(content)，相同内容不重复存
+- 同步走 Rust 后端：上传 / 下载 / 列文件 / 删除 4 个命令
+- 同步冲突：本地 updated_at vs 远端 → 较新者赢，老版本进 conflict log
+- 加密：AES-256-GCM，密钥从密码 PBKDF2 派生（Argon2id 更安全）
+- 插件：WebView 内 `eval` 沙箱，不能让插件访问主进程
+- 搜索：Rust 后端跑 ripgrep（`grep_cli` crate），前端调命令 + 渲染结果
+- 导出 PDF：用 Tauri 的 `webview.print_to_pdf`（WebView 内置）
+- 导出 DOCX：用 `docx-rs` crate 生成 .docx
+- 资源占用：单进程 < 80MB 内存
+- 性能：1 万字文档渲染 < 100ms
+- 跨平台：Windows / macOS / Linux（Tauri 原生支持）
+- 自动更新：Tauri updater 插件，配置更新服务器
+- 国际化：i18next，zh-CN / en-US
+- 打包：Tauri CLI 出 .msi / .dmg / .AppImage / .deb

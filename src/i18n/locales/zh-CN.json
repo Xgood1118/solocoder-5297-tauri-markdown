@@ -1,0 +1,137 @@
+{
+  "app": {
+    "title": "Markdown 编辑器",
+    "untitled": "无标题"
+  },
+  "menu": {
+    "file": "文件",
+    "edit": "编辑",
+    "view": "视图",
+    "new": "新建",
+    "open": "打开",
+    "save": "保存",
+    "save_as": "另存为",
+    "close": "关闭",
+    "export": "导出",
+    "export_html": "导出 HTML",
+    "export_pdf": "导出 PDF",
+    "export_docx": "导出 DOCX",
+    "exit": "退出"
+  },
+  "edit": {
+    "undo": "撤销",
+    "redo": "重做",
+    "cut": "剪切",
+    "copy": "复制",
+    "paste": "粘贴",
+    "find": "查找",
+    "replace": "替换"
+  },
+  "view": {
+    "toggle_sidebar": "切换侧边栏",
+    "toggle_outline": "切换大纲",
+    "toggle_preview": "切换预览",
+    "theme": "主题",
+    "font": "字体",
+    "font_size": "字号"
+  },
+  "theme": {
+    "light": "浅色",
+    "dark": "深色",
+    "sepia": "护眼",
+    "solarized": "Solarized"
+  },
+  "font": {
+    "system": "系统",
+    "serif": "衬线",
+    "mono": "等宽",
+    "sans": "无衬线"
+  },
+  "sidebar": {
+    "files": "文件",
+    "search": "搜索",
+    "snapshots": "快照",
+    "plugins": "插件",
+    "settings": "设置"
+  },
+  "search": {
+    "placeholder": "搜索文件或内容...",
+    "no_results": "无搜索结果",
+    "file_name": "文件名",
+    "content": "内容"
+  },
+  "sync": {
+    "title": "同步设置",
+    "provider": "同步服务",
+    "disabled": "关闭",
+    "webdav": "WebDAV",
+    "s3": "S3 兼容",
+    "endpoint": "服务器地址",
+    "username": "用户名",
+    "password": "密码",
+    "bucket": "存储桶",
+    "region": "区域",
+    "remote_path": "远程路径",
+    "auto_sync": "自动同步",
+    "sync_interval": "同步间隔",
+    "test": "测试连接",
+    "sync_now": "立即同步",
+    "last_sync": "上次同步",
+    "status": {
+      "idle": "空闲",
+      "syncing": "同步中...",
+      "success": "同步成功",
+      "failed": "同步失败"
+    }
+  },
+  "encryption": {
+    "title": "加密",
+    "set_password": "设置密码",
+    "encrypt_file": "加密文件",
+    "decrypt_file": "解密文件",
+    "password": "密码",
+    "confirm_password": "确认密码"
+  },
+  "snapshot": {
+    "title": "历史快照",
+    "create": "创建快照",
+    "restore": "恢复",
+    "delete": "删除",
+    "no_snapshots": "暂无快照",
+    "created_at": "创建时间",
+    "size": "大小"
+  },
+  "outline": {
+    "title": "目录大纲",
+    "empty": "文档无标题"
+  },
+  "tab": {
+    "close": "关闭",
+    "close_others": "关闭其他",
+    "close_all": "关闭所有",
+    "unsaved_changes": "有未保存的更改",
+    "confirm_close": "关闭前是否保存更改？"
+  },
+  "settings": {
+    "title": "设置",
+    "general": "常规",
+    "editor": "编辑器",
+    "preview": "预览",
+    "appearance": "外观",
+    "sync": "同步",
+    "plugins": "插件",
+    "about": "关于"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息"
+  }
+}
