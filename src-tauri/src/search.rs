@@ -1,8 +1,5 @@
 use std::path::Path;
-use grep_regex::RegexMatcher;
-use grep_searcher::sinks::UTF8;
-use grep_searcher::{Searcher, SearcherBuilder};
-use ignore::WalkBuilder;
+use walkdir::WalkDir;
 
 use crate::error::AppResult;
 use crate::models::SearchResult;
@@ -17,18 +14,9 @@ pub async fn search_files(dir_path: String, pattern: String) -> AppResult<Vec<St
     let mut results = Vec::new();
     let pattern_lower = pattern.to_lowercase();
 
-    let walker = WalkBuilder::new(dir_path)
-        .hidden(false)
-        .git_ignore(true)
-        .git_global(true)
-        .git_exclude(true)
-        .follow_links(false)
-        .max_depth(None)
-        .build();
-
-    for entry in walker.flatten() {
+    for entry in WalkDir::new(dir_path).max_depth(10).into_iter().flatten() {
         let path = entry.path();
-        if path.is_file() {
+        if path.is_file() && is_markdown_file(path) {
             if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
                 if name.to_lowercase().contains(&pattern_lower) {
                     results.push(path.to_string_lossy().to_string());
@@ -52,83 +40,75 @@ pub async fn search_content(
     }
 
     let case_sensitive = case_sensitive.unwrap_or(false);
-    let matcher = RegexMatcher::new(&pattern)
-        .map_err(|e| crate::error::AppError::Search(format!("Invalid pattern: {}", e)))?;
+    let mut results = Vec::new();
 
-    let mut searcher = SearcherBuilder::new()
-        .encoding(None)
-        .line_number(true)
-        .word(false)
-        .build();
-
-    let walker = WalkBuilder::new(dir_path)
-        .hidden(false)
-        .git_ignore(true)
-        .types(grep_cli::default_types().to_owned())
-        .build();
-
-    let results: std::sync::Mutex<Vec<SearchResult>> = std::sync::Mutex::new(Vec::new());
-
-    for entry in walker.flatten() {
+    for entry in WalkDir::new(dir_path).max_depth(10).into_iter().flatten() {
         let path = entry.path();
-        if path.is_file() {
-            if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
-                if ext != "md" && ext != "markdown" && ext != "txt" {
-                    continue;
-                }
-            } else {
-                continue;
-            }
+        if !path.is_file() || !is_markdown_file(path) {
+            continue;
+        }
 
-            let path_str = path.to_string_lossy().to_string();
-            let results_ref = &results;
+        let path_str = path.to_string_lossy().to_string();
 
-            let _ = searcher.search_path(
-                &matcher,
-                path,
-                UTF8(|lnum, line| {
-                    let line_str = line.trim_end_matches('\n').trim_end_matches('\r');
-                    let pattern_chars: Vec<char> = pattern.chars().collect();
-                    let line_chars: Vec<char> = line_str.chars().collect();
+        if let Ok(content) = std::fs::read_to_string(path) {
+            search_in_content(&path_str, &content, &pattern, case_sensitive, &mut results);
+        }
 
-                    let mut start = 0;
-                    while let Some(pos) = find_substring(&line_chars[start..], &pattern_chars) {
-                        let col_start = start + pos;
-                        let col_end = col_start + pattern_chars.len();
-
-                        let mut result = results_ref.lock().unwrap();
-                        result.push(SearchResult {
-                            file_path: path_str.clone(),
-                            line_number: lnum as usize,
-                            column_start: col_start + 1,
-                            column_end: col_end + 1,
-                            line_content: line_str.to_string(),
-                            match_text: pattern.clone(),
-                        });
-                        drop(result);
-
-                        start = col_end;
-                    }
-
-                    Ok(true)
-                }),
-            );
+        if results.len() >= 500 {
+            break;
         }
     }
 
-    let results = results.into_inner().unwrap();
     Ok(results)
 }
 
-fn find_substring(haystack: &[char], needle: &[char]) -> Option<usize> {
-    if needle.is_empty() || haystack.len() < needle.len() {
-        return None;
-    }
+fn search_in_content(
+    file_path: &str,
+    content: &str,
+    pattern: &str,
+    case_sensitive: bool,
+    results: &mut Vec<SearchResult>,
+) {
+    let search_pattern = if case_sensitive {
+        pattern.to_string()
+    } else {
+        pattern.to_lowercase()
+    };
 
-    for i in 0..=haystack.len() - needle.len() {
-        if haystack[i..i + needle.len()] == *needle {
-            return Some(i);
+    for (line_num, line) in content.lines().enumerate() {
+        let line_to_search = if case_sensitive {
+            line.to_string()
+        } else {
+            line.to_lowercase()
+        };
+
+        let mut start = 0;
+        while let Some(pos) = line_to_search[start..].find(&search_pattern) {
+            let col_start = start + pos;
+            let col_end = col_start + pattern.len();
+
+            results.push(SearchResult {
+                file_path: file_path.to_string(),
+                line_number: line_num + 1,
+                column_start: col_start + 1,
+                column_end: col_end + 1,
+                line_content: line.to_string(),
+                match_text: pattern.to_string(),
+            });
+
+            start = col_end;
+
+            if results.len() >= 500 {
+                return;
+            }
         }
     }
-    None
+}
+
+fn is_markdown_file(path: &Path) -> bool {
+    if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
+        matches!(ext.to_lowercase().as_str(), "md" | "markdown" | "txt")
+    } else {
+        false
+    }
 }

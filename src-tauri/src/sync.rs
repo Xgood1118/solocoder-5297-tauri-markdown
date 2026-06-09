@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use tauri::State;
@@ -9,6 +8,7 @@ use crate::error::AppResult;
 use crate::models::{RemoteFile, SyncConfig, SyncProvider};
 use crate::state::AppState;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct ConflictLog {
     file_path: String,
@@ -71,7 +71,6 @@ pub async fn test_sync_connection(config: SyncConfig) -> AppResult<bool> {
 
 async fn test_webdav(config: &SyncConfig) -> AppResult<bool> {
     use reqwest::Client;
-    use reqwest::header;
 
     let client = Client::new();
     let url = format!("{}{}", config.endpoint, config.remote_path);
@@ -94,7 +93,7 @@ async fn test_webdav(config: &SyncConfig) -> AppResult<bool> {
     }
 }
 
-async fn test_s3(config: &SyncConfig) -> AppResult<bool> {
+async fn test_s3(_config: &SyncConfig) -> AppResult<bool> {
     Ok(true)
 }
 
@@ -375,7 +374,7 @@ async fn delete_s3(_config: &SyncConfig, _remote_path: &str) -> AppResult<bool> 
 }
 
 #[tauri::command]
-pub async fn sync_all(state: State<'_, AppState>, local_dir: String) -> AppResult<Vec<String>> {
+pub async fn sync_all(state: State<'_, AppState>, _local_dir: String) -> AppResult<Vec<String>> {
     let config_dir = state
         .get_config_dir()
         .await

@@ -1,9 +1,7 @@
 use std::path::Path;
-use tauri::State;
 use tokio::fs;
 
 use crate::error::AppResult;
-use crate::state::AppState;
 
 #[tauri::command]
 pub async fn export_html(content: String, output_path: String) -> AppResult<bool> {

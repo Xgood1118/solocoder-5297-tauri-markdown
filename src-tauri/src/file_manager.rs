@@ -1,13 +1,10 @@
 use std::path::{Path, PathBuf};
 use chrono::{DateTime, Utc};
-use sha2::{Digest, Sha256};
-use tauri::State;
 use tokio::fs;
 use walkdir::WalkDir;
 
 use crate::error::AppResult;
 use crate::models::{FileInfo, Document};
-use crate::state::AppState;
 
 #[tauri::command]
 pub async fn read_file(path: String) -> AppResult<Document> {
@@ -286,7 +283,7 @@ pub async fn save_image(
     let assets_dir = PathBuf::from(&base_dir).join("assets");
     fs::create_dir_all(&assets_dir).await?;
 
-    let mut file_stem = Path::new(&file_name)
+    let file_stem = Path::new(&file_name)
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("image")
@@ -311,9 +308,3 @@ pub async fn save_image(
     Ok(format!("./assets/{}", final_name))
 }
 
-fn content_hash(content: &str) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(content.as_bytes());
-    let result = hasher.finalize();
-    format!("{:x}", result)
-}
